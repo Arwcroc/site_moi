@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import Paper from '@mui/material/Paper';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 // import Typography from '@mui/material/Typography';
 
@@ -19,20 +19,28 @@ const PresentationPage = () => {
 	}, [schoolData]);
 
 	return (
-		<Paper className="App__WebContainer__BottomSection__PresentationPage_CNI"
+		<Box className="App__WebContainer__BottomSection__PresentationPage__CNI"
 		elevation={15}
 		sx={{
 			width:"600px",
 			height:"300px",
 		}}
 		>
-			"coucou"
-			<Box className="App__WebContainer__BottomSection__PresentationPage_Pics">
-				Coucou
-			</Box>
-			{/* schoolData ?
-			<Typography variant="h5">{schoolData.User.Login}</Typography> */}
-		</Paper>
+		{
+			schoolData ? (
+			<div className="App__WebContainer__BottomSection__PresentationPage__Avatar">
+				<Avatar className="App__WebContainer__BottomSection__PresentationPage__Avatar__Pics"
+				sx={{ width: 100, height: 100 }}
+				src= {schoolData.User.image.versions.large}
+				>
+					H
+				</Avatar>
+			</div>
+			): (
+				<></>
+			)
+		}
+		</Box>
 	);
 }
 
