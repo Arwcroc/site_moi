@@ -77,3 +77,14 @@ code {
 	background-color: white;
 	border: 1px solid grey;
 }
+
+.App__WebContainer__BottomSection__PresentationPage_CNI {
+	display: flex;
+	flex-direction: column;
+
+}
+
+.App__WebContainer__BottomSection__PresentationPage_Pics {
+	display: flex;
+	align-items: center;
+}

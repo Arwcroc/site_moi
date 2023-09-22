@@ -25,8 +25,12 @@ type UserData42 struct {
 		} `json:"versions"`
 	} `json:"image"`
 	CursusUsers     []struct {
+		ID				int			`json:"id"`
 		Grade			interface{} `json:"grade"`
 		Level 			float64     `json:"level"`
+		Cursus			struct {
+			ID			int			`json:"id"`
+		} `json:"cursus"`
 	} `json:"cursus_users"`
 	ProjectsUsers	[]struct {
 		FinalMark		int    `json:"final_mark"`
@@ -48,6 +52,18 @@ type UserData42 struct {
 	} `json:"titles_users"`
 }
 
+type Project struct {
+	Name			string	`json:"name"`
+	Mark			int		`json:"mark"`
+	Validated		bool	`json:"validated?"`
+}
+
+type Title struct {
+	ID				int		`json:"id"`
+	Name			string `json:"name"`
+	Selected		bool	`json:"selected"`
+}
+
 type UserDataParsed struct {
 	User			struct {
 		Login			string      `json:"login"`
@@ -56,24 +72,17 @@ type UserDataParsed struct {
 		Grade			string
 		Level			float64
 		Image			struct {
-			Link			string `json:"link"`
+			Link			string		`json:"link"`
 			Versions		struct {
-				Large			string `json:"large"`
-				Medium			string `json:"medium"`
-				Small			string `json:"small"`
-				Micro			string `json:"micro"`
+				Large			string	`json:"large"`
+				Medium			string	`json:"medium"`
+				Small			string	`json:"small"`
+				Micro			string	`json:"micro"`
 			} `json:"versions"`
 		} `json:"image"`
 	}
-	Projects		[]struct {
-		Name			string	`json:"name"`
-		Mark			int		`json:"mark"`
-		Validated		bool	`json:"validated?"`
-	}
-	Titles			[]struct {
-		Name			string `json:"name"`
-		Selected		bool
-	} `json:"titles"`
+	Projects		[]Project			`json:"projects"`
+	Titles			[]Title 			`json:"titles"`
 }
 type Token42 struct {
 	AccessToken			string `json:"access_token"`
@@ -130,11 +139,54 @@ func (t *Token42) RefreshToken() error {
 	return err
 }
 
-func (u *UserData42) Parse() UserDataParsed{
-
+// arr := make([]string, 0) 
+// arr = append(arr, element)
+func (u *UserData42) Parse() UserDataParsed {
+	ret := UserDataParsed{}
+	ret.User.Login = u.Login
+	ret.User.FirstName = u.FirstName
+	ret.User.LastName = u.LastName
+	for _, cursusUser := range u.CursusUsers{
+		if cursusUser.Cursus.ID == 21 {
+			if cursusUser.Grade != nil {
+				ret.User.Grade = cursusUser.Grade.(string)
+			}
+			ret.User.Level = cursusUser.Level
+		}
+	}
+	ret.User.Image = u.Image
+	ret.Projects = make([]Project, 0)
+	for _, projectUsers := range u.ProjectsUsers {
+		project := Project {
+			Name: projectUsers.Project.Name,
+			Mark: projectUsers.FinalMark,
+			Validated: projectUsers.Validated,
+		}
+		ret.Projects = append(ret.Projects, project)
+	}
+	selectedId := 0
+	for _, titleUser := range u.TitlesUsers {
+		if titleUser.Selected == true {
+			selectedId = titleUser.TitleID
+			break
+		}
+	}
+	ret.Titles = make([]Title, 0)
+	for _, titleRaw := range u.Titles {
+		title := Title {
+			ID: titleRaw.ID,
+			Name: titleRaw.Name,
+			Selected: selectedId == titleRaw.ID,
+		}
+		ret.Titles = append(ret.Titles, title)
+	}
+	return ret
 }
 
 func meHandler(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	err := token.RefreshToken()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -188,7 +240,7 @@ func meHandler(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte (err.Error()))
 		return 
 	}
-	myDataBytes, err := json.Marshal(myData)
+	myDataBytes, err := json.Marshal(myData.Parse())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte (err.Error()))
@@ -198,6 +250,7 @@ func meHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	token.AccessToken = ""
 	http.HandleFunc("/me", meHandler)
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
