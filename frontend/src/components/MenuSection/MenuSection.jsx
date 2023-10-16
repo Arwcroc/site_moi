@@ -1,6 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { Link } from "react-router-dom";
 
 const MenuSection = () => {
 	return (
@@ -16,9 +17,11 @@ const MenuSection = () => {
 				<Typography variant="h4">Téo Froissart</Typography>
 			</Box>
 			<Box className="App__WebContainer__MenuSection__Home__Page">
-				<Box className="App__WebContainer__MenuSection__Home__Page__Presentation">
-					<Typography variant="button">Présentation</Typography>
-				</Box>
+				<Link to="/presentation">
+					<Box className="App__WebContainer__MenuSection__Home__Page__Presentation">
+						<Typography variant="button">Présentation</Typography>
+					</Box>
+				</Link>
 				<Box className="App__WebContainer__MenuSection__Home__Page__Hobbies">
 					<Typography variant="button">Hobbies</Typography>
 				</Box>

@@ -1,12 +1,16 @@
 import React from 'react';
-import './App.css';
-import './components/WebContainer.jsx'
 import WebContainer from './components/WebContainer.jsx'
+import { Route, Routes } from "react-router-dom";
+import PresentationPage from './components/BottomSection/PresentationPage';
+
 
 function App() {
   return (
-    <div className="App">
-		<WebContainer/>
+	<div className="App">
+		<Routes>
+			<Route path="/" element={<WebContainer/>}/>
+			<Route path="/presentation" element={<PresentationPage/>}/>
+		</Routes>
     </div>
   );
 }

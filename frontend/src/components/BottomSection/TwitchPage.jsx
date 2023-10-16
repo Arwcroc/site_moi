@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TwitchPage = (props) => {
+const TwitchPage = () => {
 
 	return (
 		<p>coucou</p>

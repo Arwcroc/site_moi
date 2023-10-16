@@ -17,6 +17,7 @@ code {
 	flex-direction: column;
 	width:100vw;
 	height:100vh;
+	overflow: auto;
 }
 
 .App__WebContainer {
@@ -33,7 +34,7 @@ code {
 .App__WebContainer__MenuSection__Home {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	align-items: center;
 	padding: 18px 0;
 }
 
@@ -82,27 +83,45 @@ code {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	/* align-items: center; */
-	/* background-color: red; */
 }
 
 .App__WebContainer__BottomSection__PresentationPage__CNI {
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
 	margin-top: 50px;
-	background-color: blue;
+}
+
+.App__WebContainer__BottomSection__PresentationPage__Avatar,
+.App__WebContainer__BottomSection__PresentationPage__Info,
+.App__WebContainer__BottomSection__PresentationPage__Text {
+	display: flex;
+	flex-direction: column;
+	/* align-content: center; */
+	/* align-items: center; */
+	padding: 10px;
+	/* border: 2px solid #ccc; */
+	/* margin: 5px; */
 
 }
 
-.App__WebContainer__BottomSection__PresentationPage__Avatar {
-	display: flex;
-	flex-direction: column;
+/* .App__WebContainer__BottomSection__PresentationPage__Avatar {
+	background-color: red;
+	justify-content: center;
+} */
+
+.App__WebContainer__BottomSection__PresentationPage__Avatar,
+.App__WebContainer__BottomSection__PresentationPage__Info,
+.App__WebContainer__BottomSection__PresentationPage__Text {
+	/* display: flex; */
+	/* flex-direction: column; */
+	/* padding: 10%; */
 	/* background-color: red; */
-}
+	/* flex: 1; */
+	/* padding: 10px;
+	border: 2px solid #ccc;
+	margin: 5px; */
+	justify-content: center;
 
-.App__WebContainer__BottomSection__PresentationPage__Avatar__Pics {
-	display: flex;
-	flex-direction: column;
-	padding: 10%;
 }
