@@ -1,7 +1,7 @@
 import React from 'react';
 import WebContainer from './components/WebContainer.jsx'
 import { Route, Routes } from "react-router-dom";
-import PresentationPage from './components/BottomSection/PresentationPage';
+// import PresentationPage from './components/BottomSection/PresentationPage';
 
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
 	<div className="App">
 		<Routes>
 			<Route path="/" element={<WebContainer/>}/>
-			<Route path="/presentation" element={<PresentationPage/>}/>
+			{/* <Route path="/presentation" element={<PresentationPage/>}/> */}
 		</Routes>
     </div>
   );
