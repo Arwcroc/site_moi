@@ -6,28 +6,41 @@ import Paper from '@mui/material/Paper';
 
 const PresentationPage = () => {
 	const [schoolData, setSchoolData] = useState(undefined);
-	// const [dataBase, setDataBase] = useState([]);
+	const [dataBase, setDataBase] = useState(undefined);
+	const [schoolDataLoading, setSchoolDataLoading] = useState(false);
 
-	useEffect(() => {
-		if (schoolData !== undefined) return;
-		setSchoolData(undefined);
+	const fetchMe = () => {
+		if (schoolData !== undefined || schoolDataLoading) return;
+		console.log("fetching /me")
+		setSchoolDataLoading(true)
 		fetch("http://localhost:8090/me").then( async (response) => {
-			if (response.status < 200 || response.status >= 400) return;
+			if (response.status < 200 || response.status >= 400) {
+				console.error("Error on fetch /me")
+			};
 			let body = await response.json();
+			console.log("got /me")
 			setSchoolData(body);
+			setSchoolDataLoading(false)
 		})
-	}, [schoolData]);
+	}
 
-	// useEffect(() => {
-	// 	if (dataBase !== undefined) return;
-	// 	setDataBase(undefined);
-	// 	fetch('http://localhost:8080/api/fichier').then( async (response) => {
-	// 		if (response.status < 200 || response.status >= 400) return;
-	// 		let body = await response.json();
-	// 		setDataBase(body);
-	// 	})
-	// }, [dataBase]);
-	
+	const fetchPrez = () => {
+		if (dataBase !== undefined) return;
+		console.log("fetching /db/text")
+		fetch('http://localhost:8090/db/text?title=prez').then( async (response) => {
+			if (response.status < 200 || response.status >= 400) {
+				console.error("Error on fetch /db/text")
+			};			let body = await response.text();
+			console.log("got /db/text")
+			setDataBase(body);
+		})
+	}
+	useEffect(() => {
+		fetchPrez()
+		fetchMe()
+	// eslint-disable-next-line
+	}, [schoolData, dataBase]);
+
 	return (
 		<Paper className="App__WebContainer__BottomSection__PresentationPage__CNI"
 		elevation={22}
@@ -62,7 +75,7 @@ const PresentationPage = () => {
 			</div>
 			<div className="App__WebContainer__BottomSection__PresentationPage__Text">
 				<Box>
-					cacafdfdgdgf sdgd fhdfhg hdfhgd fgfgd fgdfg
+					{dataBase}
 				</Box>
 			</div>
 			</>

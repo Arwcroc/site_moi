@@ -8,8 +8,7 @@ function App() {
   return (
 	<div className="App">
 		<Routes>
-			<Route path="/" element={<WebContainer/>}/>
-			{/* <Route path="/presentation" element={<PresentationPage/>}/> */}
+			<Route path="/*" element={<WebContainer/>}/>
 		</Routes>
     </div>
   );

@@ -1,18 +1,19 @@
 package main
 
 import (
+	"strings"
+	"path/filepath"
 	"bytes"
-	// "database/sql"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/Masterminds/squirrel"
+	_ "github.com/mattn/go-sqlite3"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"time"
-
-	// "github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
 )
 
 type UserData42 struct {
@@ -99,63 +100,7 @@ type Token42 struct {
 }
 
 var token = Token42{}
-
-// func SetGin() {
-// 	// Initialisez le routeur Gin
-// 	r := gin.Default()
-
-// 	// Endpoint pour récupérer le contenu du fichier depuis la base de données
-// 	r.GET("/api/fichier", func(c *gin.Context) {
-// 		// Connexion à la base de données PostgreSQL
-// 		connStr := "user=postgres dbname=postgres password=admin sslmode=disable"
-// 		db, err := sql.Open("postgres", connStr)
-// 		if err != nil {
-// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la connexion à la base de données"})
-// 			return
-// 		}
-// 		defer db.Close()
-
-// 		// Récupération du contenu du fichier depuis la base de données
-// 		var contenu string
-// 		err = db.QueryRow("SELECT contenu FROM fichiers WHERE id = $1", 1).Scan(&contenu)
-// 		if err != nil {
-// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la récupération du fichier depuis la base de données"})
-// 			return
-// 		}
-
-// 		// Réponse JSON contenant le contenu du fichier
-// 		c.JSON(http.StatusOK, gin.H{"contenu": contenu})
-// 	})
-
-// 	// Démarrez le serveur
-// 	err := r.Run(":8080")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// }
-
-// func SetDatabase() {
-// 	connStr := "user=postgres dbname=postgres password=admin sslmode=disable"
-// 	db, err := sql.Open("postgres", connStr)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	defer db.Close()
-
-// 	// Lecture du contenu du fichier texte
-// 	content, err := os.ReadFile("prez.txt")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	// Insertion du contenu dans la base de données
-// 	_, err = db.Exec("INSERT INTO fichiers (contenu) VALUES ($1)", content)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	fmt.Println("Fichier enregistré dans la base de données.")
-// }
+var db *sql.DB
 
 func (t *Token42) CheckToken() bool {
 	if t.AccessToken == "" {
@@ -311,10 +256,106 @@ func meHandler(w http.ResponseWriter, req *http.Request) {
 	w.Write(myDataBytes)
 }
 
+func dbTextHandler(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	
+	queryTitle := req.URL.Query().Get("title")
+	if queryTitle == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return 
+	}
+
+	rows, err := squirrel.
+		Select("value").
+		From("texts").
+		Where(squirrel.Eq{"title": queryTitle}).
+		Limit(1).
+		RunWith(db).Query()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		w.WriteHeader(http.StatusNotFound)
+	}
+	
+	text := ""
+	err = rows.Scan(&text)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(text))
+	return
+}
+
+func initDbTexts() error {
+	textsDir, err := os.ReadDir("./data/texts")
+	if err != nil {
+		return err
+	}
+	for _, file := range textsDir {
+		textData, err := os.ReadFile("./data/texts/" + file.Name())
+		if err != nil {
+			return err
+		}
+		
+		fileName := strings.ReplaceAll(file.Name(), filepath.Ext(file.Name()), "")
+
+		_, err = squirrel.
+			Insert("texts").
+			Columns("title", "value").
+			Values(fileName, string(textData)).
+			RunWith(db).Exec()
+		if err != nil {
+			if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+				continue
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func initDb(dsn string) error {
+	var err error
+
+	db, err = sql.Open("sqlite3", dsn)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS texts (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			title TEXT NOT NULL UNIQUE,
+			value TEXT NOT NULL
+		);
+	`)
+	if err != nil {
+		return err
+	}
+
+	err = initDbTexts()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func main() {
-	// SetDatabase()
-	// SetGin()
+	err := initDb("file:./data/db.sqlite3")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	token.AccessToken = ""
 	http.HandleFunc("/me", meHandler)
+	http.HandleFunc("/db/text", dbTextHandler)
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }

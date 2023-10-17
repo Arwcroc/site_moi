@@ -12,6 +12,15 @@ code {
     monospace;
 }
 
+a {
+	text-decoration: inherit;
+	color: inherit;
+}
+
+a:hover {
+	color: #ee6c4d;
+}
+
 .App {
 	display:flex;
 	flex-direction: column;
@@ -83,6 +92,14 @@ code {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
+}
+
+.App__WebContainer__BottomSection__PresentationPage__Instagram {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	padding:50px;
+	height: 100px;
 }
 
 .App__WebContainer__BottomSection__PresentationPage__CNI {
