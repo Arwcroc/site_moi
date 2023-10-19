@@ -191,7 +191,7 @@ func (u *UserData42) Parse() UserDataParsed {
 }
 
 func meHandler(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	err := token.RefreshToken()
@@ -257,7 +257,7 @@ func meHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func dbTextHandler(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	
 	queryTitle := req.URL.Query().Get("title")
@@ -321,6 +321,71 @@ func initDbTexts() error {
 	return nil
 }
 
+func dbImgHandler(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "image/png")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	
+	queryTitle := req.URL.Query().Get("title")
+	if queryTitle == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return 
+	}
+
+	rows, err := squirrel.
+		Select("value").
+		From("imgs").
+		Where(squirrel.Eq{"title": queryTitle}).
+		Limit(1).
+		RunWith(db).Query()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		w.WriteHeader(http.StatusNotFound)
+	}
+	
+	text := ""
+	err = rows.Scan(&text)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(text))
+	return
+}
+
+func initDbImgs() error {
+	imgsDir, err := os.ReadDir("./data/imgs")
+	if err != nil {
+		return err
+	}
+	for _, file := range imgsDir {
+		imgData, err := os.ReadFile("./data/imgs/" + file.Name())
+		if err != nil {
+			return err
+		}
+		
+		fileName := strings.ReplaceAll(file.Name(), filepath.Ext(file.Name()), "")
+
+		_, err = squirrel.
+			Insert("imgs").
+			Columns("title", "value").
+			Values(fileName, string(imgData)).
+			RunWith(db).Exec()
+		if err != nil {
+			if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+				continue
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func initDb(dsn string) error {
 	var err error
 
@@ -340,7 +405,23 @@ func initDb(dsn string) error {
 		return err
 	}
 
+	_, err = db.Exec(`
+	CREATE TABLE IF NOT EXISTS imgs (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		title TEXT NOT NULL UNIQUE,
+		value TEXT NOT NULL
+	);
+	`)
+	if err != nil {
+		return err
+	}
+
 	err = initDbTexts()
+	if err != nil {
+		return err
+	}
+
+	err = initDbImgs()
 	if err != nil {
 		return err
 	}
@@ -357,5 +438,6 @@ func main() {
 	token.AccessToken = ""
 	http.HandleFunc("/me", meHandler)
 	http.HandleFunc("/db/text", dbTextHandler)
+	http.HandleFunc("/db/img", dbImgHandler)
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }

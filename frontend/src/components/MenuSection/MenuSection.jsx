@@ -13,7 +13,7 @@ const MenuSection = () => {
 				borderBottom: "solid 1px darkgrey",
 			}}
 		>
-			<Link to="/">
+			<Link to="/" className='App__WebContainer__MenuSection__Link'>
 				<Box className="App__WebContainer__MenuSection__Home">
 					<Typography variant="h4">Téo Froissart</Typography>
 				</Box>
@@ -29,9 +29,9 @@ const MenuSection = () => {
 						<Typography variant="button">Hobbies</Typography>
 					</Box>
 				</Link>
-				<Link to="/twitch">
-					<Box className="App__WebContainer__MenuSection__Home__Page__Twitch">
-						<Typography variant="button">Twitch</Typography>
+				<Link to="/media">
+					<Box className="App__WebContainer__MenuSection__Home__Page__Media">
+						<Typography variant="button">Media</Typography>
 					</Box>
 				</Link>
 				<Link to="/youtube">

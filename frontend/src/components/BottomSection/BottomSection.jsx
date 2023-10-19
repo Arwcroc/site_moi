@@ -1,5 +1,6 @@
 import React from 'react';
-// import TwitchPage from './TwitchPage';
+import MediaPage from './MediaPage';
+import HobbiesPage from './HobbiesPage';
 import PresentationPage from './PresentationPage';
 import Box from '@mui/material/Box';
 import { Route, Routes } from "react-router-dom";
@@ -24,6 +25,8 @@ const BottomSection = () => {
 					</>
 				}/>
 				<Route path="/presentation" element={<PresentationPage/>}/>
+				<Route path="/media" element={<MediaPage/>}/>
+				<Route path="/hobbies" element={<HobbiesPage/>}/>
 			</Routes>
 		</Box>
 		</>

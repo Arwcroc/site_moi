@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const PresentationPage = () => {
 	const [schoolData, setSchoolData] = useState(undefined);
@@ -16,6 +17,7 @@ const PresentationPage = () => {
 		fetch("http://localhost:8090/me").then( async (response) => {
 			if (response.status < 200 || response.status >= 400) {
 				console.error("Error on fetch /me")
+				return
 			};
 			let body = await response.json();
 			console.log("got /me")
@@ -80,7 +82,11 @@ const PresentationPage = () => {
 			</div>
 			</>
 			): (
-				<></>
+				<>
+					<Box className="App__WebContainer__BottomSection__PresentationPage__Loading">
+						<CircularProgress />
+					</Box>
+				</>
 			)
 		}
 		</Paper>
