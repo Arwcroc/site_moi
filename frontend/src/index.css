@@ -133,7 +133,6 @@ a:hover {
 }
 .App__WebContainer__BottomSection__MediaPage {
 	width: 100%;
-	opacity: 60%;
 	z-index: 1;
 }
 
@@ -144,7 +143,13 @@ a:hover {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: center;
+	grid-template-columns: 1fr 1fr;
+	/* opacity: 60%; */
 }
 
 .App__WebContainer__BottomSection__MediaPage__YoutubePlace {
@@ -160,11 +165,11 @@ a:hover {
 .App__WebContainer__BottomSection__MediaPage__TwitchPlace__antoinedaniel,
 .App__WebContainer__BottomSection__MediaPage__TwitchPlace__zerator,
 .App__WebContainer__BottomSection__MediaPage__TwitchPlace__baghera {
-	display: flex;
-	flex-direction: column;
-	flex-wrap: wrap;
-	justify-content: space-around;
 	z-index: 2;
 	background-color: #ee6c4d;
+	margin-top: 50px;
+	margin-bottom: 50px;
 	width: 30%;
+	height: 30%;
+	/* opacity: 100%; */
 }

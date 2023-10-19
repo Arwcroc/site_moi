@@ -102,7 +102,8 @@ type Token42 struct {
 var token = Token42{}
 var db *sql.DB
 
-func (t *Token42) CheckToken() bool {
+
+func (t *TokenTwitch) CheckTokenTwitch() bool {
 	if t.AccessToken == "" {
 		return false
 	}
@@ -112,7 +113,55 @@ func (t *Token42) CheckToken() bool {
 	return true
 }
 
-func (t *Token42) GrabToken() error {
+func (t *TokenTwitch) GrabTokenTwitch() error {
+	url := "https://id.twitch.tv/oauth2/token?grant_type=client_credentials"
+	requestUrl := fmt.Sprintf(
+		"%s&client_id=%s&client_secret=%s",
+		url,
+		os.Getenv("BACKEND_TWITCH_UID"),
+		os.Getenv("BACKEND_TWITCH_SECRET"),
+	)
+
+	resp, err := http.Post(requestUrl, "", bytes.NewBuffer([]byte("")))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(b, t)
+	if err != nil {
+		return err
+	}
+	t.ExpiresDate = time.Now().Add(time.Second * time.Duration(t.ExpiresIn))
+	return nil
+}
+
+func (t *TokenTwitch) RefreshTokenTwitch() error {
+	if t.CheckTokenTwitch() {
+		return nil
+	}
+	err := token.GrabToken42()
+	return err
+}
+
+
+
+
+
+func (t *Token42) CheckToken42() bool {
+	if t.AccessToken == "" {
+		return false
+	}
+	if t.ExpiresDate.Before(time.Now()) {
+		return false
+	}
+	return true
+}
+
+func (t *Token42) GrabToken42() error {
 	url := "https://api.intra.42.fr/oauth/token?grant_type=client_credentials"
 	requestUrl := fmt.Sprintf(
 		"%s&client_id=%s&client_secret=%s",
@@ -138,11 +187,11 @@ func (t *Token42) GrabToken() error {
 	return nil
 }
 
-func (t *Token42) RefreshToken() error {
-	if t.CheckToken() {
+func (t *Token42) RefreshToken42() error {
+	if t.CheckToken42() {
 		return nil
 	}
-	err := token.GrabToken()
+	err := token.GrabToken42()
 	return err
 }
 
@@ -190,11 +239,11 @@ func (u *UserData42) Parse() UserDataParsed {
 	return ret
 }
 
-func meHandler(w http.ResponseWriter, req *http.Request) {
+func meHandler42(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	err := token.RefreshToken()
+	err := token.RefreshToken42()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -436,7 +485,7 @@ func main() {
 	}
 
 	token.AccessToken = ""
-	http.HandleFunc("/me", meHandler)
+	http.HandleFunc("/me", meHandler42)
 	http.HandleFunc("/db/text", dbTextHandler)
 	http.HandleFunc("/db/img", dbImgHandler)
 	log.Fatal(http.ListenAndServe(":8090", nil))
