@@ -1,8 +1,6 @@
 package main
 
 import (
-	"strings"
-	"path/filepath"
 	"bytes"
 	"database/sql"
 	"encoding/json"
@@ -13,6 +11,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -89,6 +89,7 @@ type UserDataParsed struct {
 	Projects []Project `json:"projects"`
 	Titles   []Title   `json:"titles"`
 }
+
 type Token42 struct {
 	AccessToken      string `json:"access_token"`
 	TokenType        string `json:"token_type"`
@@ -99,57 +100,69 @@ type Token42 struct {
 	ExpiresDate      time.Time
 }
 
+type TokenTwitch struct {
+	AccessToken      string `json:"access_token"`
+	TokenType        string `json:"token_type"`
+	ExpiresIn        int    `json:"expires_in"`
+	Scope            string `json:"scope"`
+	CreatedAt        int    `json:"created_at"`
+	SecretValidUntil int    `json:"secret_valid_until"`
+	ExpiresDate      time.Time
+}
+
 var token = Token42{}
+
+// var tokenT = TokenTwitch{}
 var db *sql.DB
 
+// func (t *TokenTwitch) CheckTokenTwitch() bool {
+// 	if t.AccessToken == "" {
+// 		return false
+// 	}
+// 	if t.ExpiresDate.Before(time.Now()) {
+// 		return false
+// 	}
+// 	return true
+// }
 
-func (t *TokenTwitch) CheckTokenTwitch() bool {
-	if t.AccessToken == "" {
-		return false
-	}
-	if t.ExpiresDate.Before(time.Now()) {
-		return false
-	}
-	return true
-}
+// func (t *TokenTwitch) GrabTokenTwitch() error {
+// 	// url := "https://id.twitch.tv/oauth2/token?grant_type=client_credentials"
 
-func (t *TokenTwitch) GrabTokenTwitch() error {
-	url := "https://id.twitch.tv/oauth2/token?grant_type=client_credentials"
-	requestUrl := fmt.Sprintf(
-		"%s&client_id=%s&client_secret=%s",
-		url,
-		os.Getenv("BACKEND_TWITCH_UID"),
-		os.Getenv("BACKEND_TWITCH_SECRET"),
-	)
+// 	url := "https://id.twitch.tv/oauth2/token?"
+// 	requestUrl := fmt.Sprintf(
+// 		"%s&client_id=%s&client_secret=%s&code=%s&grant_type=%s&redirect_uri=%s",
+// 		url,
+// 		os.Getenv("BACKEND_TWITCH_UID"),
+// 		os.Getenv("BACKEND_TWITCH_SECRET"),
+// 		os.Getenv("BACKEND_TWITCH_CODE"),
+// 		os.Getenv("BACKEND_TWITCH_GRANT"),
+// 		os.Getenv("BACKEND_TWITCH_URI"),
+// 	)
 
-	resp, err := http.Post(requestUrl, "", bytes.NewBuffer([]byte("")))
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(b, t)
-	if err != nil {
-		return err
-	}
-	t.ExpiresDate = time.Now().Add(time.Second * time.Duration(t.ExpiresIn))
-	return nil
-}
+// 	resp, err := http.Post(requestUrl, "", bytes.NewBuffer([]byte("")))
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer resp.Body.Close()
+// 	b, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	err = json.Unmarshal(b, t)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	t.ExpiresDate = time.Now().Add(time.Second * time.Duration(t.ExpiresIn))
+// 	return nil
+// }
 
-func (t *TokenTwitch) RefreshTokenTwitch() error {
-	if t.CheckTokenTwitch() {
-		return nil
-	}
-	err := token.GrabToken42()
-	return err
-}
-
-
-
-
+// func (t *TokenTwitch) RefreshTokenTwitch() error {
+// 	if t.CheckTokenTwitch() {
+// 		return nil
+// 	}
+// 	err := tokenT.GrabTokenTwitch()
+// 	return err
+// }
 
 func (t *Token42) CheckToken42() bool {
 	if t.AccessToken == "" {
@@ -308,11 +321,11 @@ func meHandler42(w http.ResponseWriter, req *http.Request) {
 func dbTextHandler(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	
+
 	queryTitle := req.URL.Query().Get("title")
 	if queryTitle == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		return 
+		return
 	}
 
 	rows, err := squirrel.
@@ -329,7 +342,7 @@ func dbTextHandler(w http.ResponseWriter, req *http.Request) {
 	if !rows.Next() {
 		w.WriteHeader(http.StatusNotFound)
 	}
-	
+
 	text := ""
 	err = rows.Scan(&text)
 	if err != nil {
@@ -351,7 +364,7 @@ func initDbTexts() error {
 		if err != nil {
 			return err
 		}
-		
+
 		fileName := strings.ReplaceAll(file.Name(), filepath.Ext(file.Name()), "")
 
 		_, err = squirrel.
@@ -373,11 +386,11 @@ func initDbTexts() error {
 func dbImgHandler(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "image/png")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	
+
 	queryTitle := req.URL.Query().Get("title")
 	if queryTitle == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		return 
+		return
 	}
 
 	rows, err := squirrel.
@@ -394,7 +407,7 @@ func dbImgHandler(w http.ResponseWriter, req *http.Request) {
 	if !rows.Next() {
 		w.WriteHeader(http.StatusNotFound)
 	}
-	
+
 	text := ""
 	err = rows.Scan(&text)
 	if err != nil {
@@ -416,7 +429,7 @@ func initDbImgs() error {
 		if err != nil {
 			return err
 		}
-		
+
 		fileName := strings.ReplaceAll(file.Name(), filepath.Ext(file.Name()), "")
 
 		_, err = squirrel.
@@ -485,7 +498,9 @@ func main() {
 	}
 
 	token.AccessToken = ""
+	// tokenT.AccessToken = ""
 	http.HandleFunc("/me", meHandler42)
+	// http.HandleFunc("/twitchapi", twitchHandler)
 	http.HandleFunc("/db/text", dbTextHandler)
 	http.HandleFunc("/db/img", dbImgHandler)
 	log.Fatal(http.ListenAndServe(":8090", nil))

@@ -34,9 +34,9 @@ const MenuSection = () => {
 						<Typography variant="button">Media</Typography>
 					</Box>
 				</Link>
-				<Link to="/youtube">
-					<Box className="App__WebContainer__MenuSection__Home__Page__Youtube">
-						<Typography variant="button">Youtube</Typography>
+				<Link to="/contact">
+					<Box className="App__WebContainer__MenuSection__Home__Page__Contact">
+						<Typography variant="button">Contact</Typography>
 					</Box>
 				</Link>
 			</Box>

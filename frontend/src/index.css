@@ -87,7 +87,7 @@ a:hover {
 	border: 1px solid grey;
 }
 
-.App__WebContainer__MenuSection__Home__Page__Youtube {
+.App__WebContainer__MenuSection__Home__Page__Contact {
 	display: flex;
 	flex-direction: row;
 	padding: 5px;
@@ -137,7 +137,7 @@ a:hover {
 }
 
 .App__WebContainer__BottomSection__MediaPage__TwitchPlace {
-	height: 600px;
+	height: 800px;
 	background-image: url("http://localhost:8090/db/img?title=twitchbg");
 	background-attachment: fixed;
 	background-position: center;
@@ -153,7 +153,7 @@ a:hover {
 }
 
 .App__WebContainer__BottomSection__MediaPage__YoutubePlace {
-	height: 600px;
+	height: 800px;
 	background-image: url("http://localhost:8090/db/img?title=youtubebg");
 	background-attachment: fixed;
 	background-position: center;
