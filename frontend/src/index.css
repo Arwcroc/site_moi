@@ -173,3 +173,16 @@ a:hover {
 	height: 30%;
 	/* opacity: 100%; */
 }
+
+.App__WebContainer__BottomSection__ContactPage__Main {
+	display: flex;
+	flex-direction: column;
+	/* background-color: #ee6c4d; */
+	width: 350px;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+.App__WebContainer__BottomSection__ContactPage__Main__Name {
+	background-color: #ffffff;
+}
