@@ -144,11 +144,12 @@ a:hover {
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
-	flex-direction: column;
+	/* flex-direction: column; */
 	flex-wrap: wrap;
-	justify-content: space-around;
+	gap: 8px;
+	justify-content: center;
 	align-items: center;
-	grid-template-columns: 1fr 1fr;
+	/* grid-template-columns: 1fr 1fr; */
 	/* opacity: 60%; */
 }
 
@@ -167,11 +168,11 @@ a:hover {
 .App__WebContainer__BottomSection__MediaPage__TwitchPlace__baghera {
 	z-index: 2;
 	background-color: #ee6c4d;
-	margin-top: 50px;
-	margin-bottom: 50px;
-	width: 30%;
-	height: 30%;
-	/* opacity: 100%; */
+	border-radius: 25px;
+	/* margin-top: 50px;
+	margin-bottom: 50px; */
+	width: 300px;
+	height: 100px;
 }
 
 .App__WebContainer__BottomSection__ContactPage__Main {
