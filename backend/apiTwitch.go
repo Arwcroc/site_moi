@@ -21,6 +21,7 @@ type TwitchStreamData struct {
 
 type TwitchUserData struct {
 	ProfileImageURL string    `json:"profile_image_url"`
+	DisplayName string `json:"display_name"`
 }
 
 type TwitchUserResponse struct {
@@ -70,6 +71,7 @@ func doTwitchRequest(w http.ResponseWriter, url string) ([]byte, error) {
 
 	// Vérifier le code de statut de la réponse
 	if resp.StatusCode >= 400 {
+		fmt.Println(string(body))
 		return body, errors.New(fmt.Sprintf("Error on request: %d", resp.StatusCode))
 	}
 

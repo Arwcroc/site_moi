@@ -32,7 +32,8 @@ const PresentationPage = () => {
 		fetch('http://localhost:8090/db/text?title=prez').then( async (response) => {
 			if (response.status < 200 || response.status >= 400) {
 				console.error("Error on fetch /db/text")
-			};			let body = await response.text();
+			};
+			let body = await response.text();
 			console.log("got /db/text")
 			setDataBase(body);
 		})
