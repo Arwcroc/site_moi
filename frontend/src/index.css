@@ -18,7 +18,7 @@ a {
 }
 
 a:hover {
-	color: #ee6c4d;
+	color: #484649;
 }
 
 .App {
@@ -133,7 +133,7 @@ a:hover {
 }
 .App__WebContainer__BottomSection__MediaPage {
 	width: 100%;
-	z-index: 1;
+	/* z-index: 1; */
 }
 
 .App__WebContainer__BottomSection__MediaPage__TwitchPlace {
@@ -144,8 +144,8 @@ a:hover {
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
-	flex-wrap: wrap;
-	gap: 8px;
+	/*flex-wrap: wrap; */
+	/* gap: 8px; */
 	/* justify-content: space-around; */
 	/* align-items: center; */
 }
@@ -157,18 +157,51 @@ a:hover {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
+	display: flex;
 }
 
-.App__WebContainer__BottomSection__MediaPage__TwitchPlace__jdg,
-.App__WebContainer__BottomSection__MediaPage__TwitchPlace__antoinedaniel,
-.App__WebContainer__BottomSection__MediaPage__TwitchPlace__zerator,
-.App__WebContainer__BottomSection__MediaPage__TwitchPlace__baghera {
-	z-index: 2;
-	background-color: #ee6c4d;
+.App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box {
+	/* z-index: 2; */
+	display: flex;
+	background-color: #d11b1b;
 	border-radius: 25px;
 	width: 50%;
+	min-width: 300px;
+	min-height: 100px;
+	max-height: 100px;
 	margin: auto;
+	align-items: center;
 }
+
+.App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box:hover {
+	background-color: #ec6c6c;
+}
+
+.App__WebContainer__BottomSection__MediaPage__YoutubePlace__Box {
+	/* z-index: 2; */
+	display: flex;
+	background-color: #5f1ec7;
+	border-radius: 25px;
+	width: 50%;
+	min-width: 300px;
+	min-height: 100px;
+	max-height: 100px;
+	margin: auto;
+	align-items: center;
+;}
+
+.App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box__Pics {
+	width: 25%;
+	margin-left: 7%;
+}
+
+/* .App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box__Info {
+
+}
+
+.App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box__Info_Live {
+
+} */
 
 .App__WebContainer__BottomSection__ContactPage__Main {
 	display: flex;

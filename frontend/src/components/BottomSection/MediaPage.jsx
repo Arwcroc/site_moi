@@ -4,58 +4,86 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
+import CircularProgress from '@mui/material/CircularProgress';
+import GroupTwoToneIcon from '@mui/icons-material/GroupTwoTone';
+
+
+// extension vscode : prettier - code formatter
 
 const TwitchElement = (props) => {
-	const [twitchDataJDG, setTwitchDataJDG] = useState();
+	const [twitchData, setTwitchData] = useState();
 
-	const fetchTwitchJDG = () => {
-		if (twitchDataJDG !== undefined) return;
+	const fetchTwitch = () => {
+		if (twitchData !== undefined) return;
 		console.log("fetching api twitch " + props.username)
 		fetch('http://localhost:8090/twitchapi?user_id=' + props.username).then( async (response) => {
 			if (response.status < 200 || response.status >= 400) {
 				console.error("Error on fetch api twitch " + props.username)
 			};
 			let body = await response.json();
-			// console.log(body)
 			console.log("got api twitch " + props.username)
-			setTwitchDataJDG(body);
+			setTwitchData(body);
 		})
 	}
 	useEffect(() => {
-		fetchTwitchJDG()
+		fetchTwitch()
 		// eslint-disable-next-line
-	}, [setTwitchDataJDG]);
+	}, [setTwitchData]);
 
 	return (
-		<Grid item xs={10} md={5}>
-			<Box className="App__WebContainer__BottomSection__MediaPage__TwitchPlace__jdg">
-				<Grid container spacing={2}>
-					<Grid item>		
-						<Avatar src={twitchDataJDG && twitchDataJDG.user.profile_image_url}>JDG</Avatar> 
-					</Grid>
-					<Grid item xs={12} sm container>
-						<Grid item xs container direction="column" spacing={2}>
-							<Grid item xs>
-								<Typography gutterBottom variant="subtitle1" component="div">
-									{twitchDataJDG && twitchDataJDG.user.display_name}
-								</Typography>
-								<Button>No LIVE</Button>
-							</Grid>
-						</Grid>
-					</Grid>
-				</Grid>
-			</Box>				
+		<Grid item xs={8} md={6}>
+		{
+			twitchData ? (
+			<>
+			<Link href={"https://www.twitch.tv/" + props.username} color="inherit" underline='none' target="_blank">
+				<Box className="App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box">
+					<Box className="App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box__Pics">	
+						<Avatar src={twitchData.user.profile_image_url}>Img</Avatar> 
+					</Box>
+					<Box className="App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box__Info">	
+						<Typography gutterBottom variant="subtitle1" component="div">
+							{twitchData.user.display_name}
+						</Typography>
+						<Box className="App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box__Info_Live">
+							{twitchData.has_stream === false ? <>{"VISIT STREAMER PAGE"} </>: <>{twitchData.stream.game_name + " : " + twitchData.stream.viewer_count + " "} <GroupTwoToneIcon/></>}
+						</Box>
+					</Box>		
+				</Box>
+			</Link>
+			</>
+			): (
+				<>
+					<Box>
+						<CircularProgress />
+					</Box>
+				</>
+			)	
+		}			
 		</Grid>
 	)
 }
 
 const MediaPage = () => {
 
-
 	return (
 		<div className="App__WebContainer__BottomSection__MediaPage">
 			<div className="App__WebContainer__BottomSection__MediaPage__TwitchPlace">
+				<Grid 
+				container
+				columnSpacing={8}
+				rowSpacing={8}
+				direction="row"
+				justifyContent="center"
+				alignItems="center"
+				>
+					<TwitchElement username="joueur_du_grenier" />
+					<TwitchElement username="zerator" />
+					<TwitchElement username="antoinedaniel" />
+					<TwitchElement username="ponce" />
+				</Grid>
+			</div>
+			<div className="App__WebContainer__BottomSection__MediaPage__YoutubePlace">
 				<Grid 
 				container
 				columnSpacing={8}
@@ -67,11 +95,8 @@ const MediaPage = () => {
 					<TwitchElement username="joueur_du_grenier" />
 					<TwitchElement username="zerator" />
 					<TwitchElement username="antoinedaniel" />
-					<TwitchElement username="mistermv" />
+					<TwitchElement username="ponce" />
 				</Grid>
-			</div>
-			<div className="App__WebContainer__BottomSection__MediaPage__YoutubePlace">
-				
 			</div>
 		</div>
 	);

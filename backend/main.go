@@ -198,8 +198,6 @@ func initDb(dsn string) error {
 	return nil
 }
 
-// zerator: 41719107
-
 func main() {
 	err := initDb("file:./data/db.sqlite3")
 	if err != nil {
