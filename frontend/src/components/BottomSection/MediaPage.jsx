@@ -46,7 +46,13 @@ const TwitchElement = (props) => {
 							{twitchData.user.display_name}
 						</Typography>
 						<Box className="App__WebContainer__BottomSection__MediaPage__TwitchPlace__Box__Info_Live">
-							{twitchData.has_stream === false ? <>{"VISIT STREAMER PAGE"} </>: <>{twitchData.stream.game_name + " : " + twitchData.stream.viewer_count + " "} <GroupTwoToneIcon/></>}
+							{twitchData.has_stream === false ?
+							"VISIT STREAMER PAGE" : 
+							<>
+							<Typography>{twitchData.stream.game_name}</Typography>
+							<Typography><>{twitchData.stream.viewer_count} <GroupTwoToneIcon/></></Typography>
+							</>
+							}
 						</Box>
 					</Box>		
 				</Box>
