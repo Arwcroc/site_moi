@@ -9,7 +9,7 @@ const MenuSection = () => {
 			sx={{
 				width: "100%",
 				height: "20%",
-				background: "#cacadada",
+				background: "#DDD0C8",
 				borderBottom: "solid 1px darkgrey",
 			}}
 		>

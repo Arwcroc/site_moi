@@ -2,7 +2,6 @@ import React from 'react';
 import Box from '@mui/material/Box';
 
 const HobbiesPage = () => {
-
 	return (
 		<div className="App__WebContainer__BottomSection__HobbiesPage__Image">
 			<Box>

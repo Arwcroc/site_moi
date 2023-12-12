@@ -86,7 +86,7 @@ const MediaPage = () => {
 					<TwitchElement username="joueur_du_grenier" />
 					<TwitchElement username="zerator" />
 					<TwitchElement username="antoinedaniel" />
-					<TwitchElement username="ponce" />
+					<TwitchElement username="bagherajones" />
 				</Grid>
 			</div>
 			<div className="App__WebContainer__BottomSection__MediaPage__YoutubePlace">

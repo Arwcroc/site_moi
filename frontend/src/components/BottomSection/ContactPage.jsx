@@ -1,19 +1,24 @@
 import React from 'react';
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, Typography } from '@mui/material';
 
 const ContactPage = () => {
 	return (
-		<Box className="App__WebContainer__BottomSection__ContactPage__Main">
-			Contactez moi :
-			<TextField id="outlined-basic" label="Full Name" variant="outlined" margin="dense" className="App__WebContainer__BottomSection__ContactPage__Main__Name">
-			</TextField>
-			<TextField id="outlined-basic" label="Company" variant="outlined" margin="dense" className="App__WebContainer__BottomSection__ContactPage__Main__Name">
-			</TextField>
-			<TextField id="outlined-basic" label="E-Mail" variant="outlined" margin="dense" className="App__WebContainer__BottomSection__ContactPage__Main__Name">
-			</TextField>
-			<TextField id="outlined-basic" label="Message" multiline maxRows={4} margin="dense" className="App__WebContainer__BottomSection__ContactPage__Main__Name">
-			</TextField>
-		</Box>
+		<div className="App__WebContainer__BottomSection__ContactPage__Main">
+			<Box className="App__WebContainer__BottomSection__ContactPage__Info">
+				<Typography>Contactez moi :</Typography>
+				<TextField id="outlined-basic" fullWidth label="Full Name" variant="outlined" margin="dense" className="App__WebContainer__BottomSection__ContactPage__Main__Name">
+				</TextField>
+				<TextField id="outlined-basic" fullWidth label="Company" variant="outlined" margin="dense" className="App__WebContainer__BottomSection__ContactPage__Main__Name">
+				</TextField>
+				<TextField id="outlined-basic" fullWidth label="E-Mail" variant="outlined" margin="dense" className="App__WebContainer__BottomSection__ContactPage__Main__Name">
+				</TextField>
+				<TextField id="outlined-basic" fullWidth label="Message" multiline maxRows={4} margin="dense" className="App__WebContainer__BottomSection__ContactPage__Main__Name">
+				</TextField>
+			</Box>
+			<Box className="App__WebContainer__BottomSection__ContactPage__Send">
+				<Typography>Send</Typography>
+			</Box>
+		</div>
 	);
 }
 
